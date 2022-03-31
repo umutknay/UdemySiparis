@@ -22,12 +22,25 @@ namespace UdemySiparis.Data.Repository
         }
         public void Add(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Add(entity);
         }
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = _dbSet;
+            if (filter !=null)
+            {
+                query = query.Where(filter);
+            }
+            if (includeProperties != null)
+            {
+                foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(item);
+                }
+            }
+            return query.ToList();
+
         }
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
